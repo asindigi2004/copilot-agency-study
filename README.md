@@ -192,3 +192,29 @@ tests/                 - Test files
 README.md              - This file
 requirements.txt       - Python dependencies
 ```
+
+## Reflections on Automation
+
+This pipeline was built as part of a broader study on human-AI 
+interaction during Microsoft Build 2026.
+
+**What the pipeline gives:**
+Every push now triggers lint and tests across Python 3.11 and 3.12 
+automatically. It caught two things I missed: style violations in 
+agent-generated code, and a module path issue the agent didn't 
+anticipate. The pipeline is more honest than the agent; it gives 
+objective signal, not confident-looking output.
+
+**What the pipeline takes:**
+Before CI, I ran tests manually and knew exactly what passed and why. 
+Now tests pass automatically and I have to consciously resist just 
+checking the green checkmark without reading what ran. Automation 
+increases delivery speed; it can quietly reduce comprehension if you 
+let it.
+
+**The HAI tension:**
+Both the agent and the pipeline remove friction from development. 
+The difference is transparency — the pipeline shows you exactly what 
+it checked and why it failed. The agent does not. Designing AI tools 
+that match the pipeline's honesty about their own reasoning is an 
+open problem in human-AI interaction.
