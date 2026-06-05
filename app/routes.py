@@ -1,37 +1,30 @@
 from flask import Flask, jsonify, request
+from app.services import TaskService
 
 app = Flask(__name__)
-
-tasks = []
-next_id = 1  # at top of file, outside everything
+task_service = TaskService()
 
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
-    return jsonify(tasks)
+    return jsonify(task_service.get_all_tasks())
 
 @app.route('/tasks', methods=['POST'])
 def create_task():
-    global next_id
     data = request.get_json()
     if not data or 'title' not in data:
         return jsonify({'error': 'title required'}), 400
-    task = {'id': next_id, 'title': data['title'], 'done': False}
-    next_id += 1
-    tasks.append(task)
+    task = task_service.create_task(data['title'])
     return jsonify(task), 201
 
 @app.route('/tasks/<int:task_id>', methods=['PATCH'])
 def update_task(task_id):
-    task = next((t for t in tasks if t['id'] == task_id), None)
+    task = task_service.update_task(task_id, request.get_json().get('done'))
     if not task:
         return jsonify({'error': 'not found'}), 404
-    task['done'] = request.get_json().get('done', task['done'])
     return jsonify(task)
 
 @app.route('/tasks/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
-    task = next((t for t in tasks if t['id'] == task_id), None)
-    if not task:
+    if not task_service.delete_task(task_id):
         return jsonify({'error': 'not found'}), 404
-    tasks.remove(task)
     return '', 204
