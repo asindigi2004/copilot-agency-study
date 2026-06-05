@@ -10,9 +10,6 @@ def get_tasks():
     return jsonify(tasks)
 
 @app.route('/tasks', methods=['POST'])
-
-
-@app.route('/tasks', methods=['POST'])
 def create_task():
     global next_id
     data = request.get_json()
